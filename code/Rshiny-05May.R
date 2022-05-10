@@ -1,7 +1,10 @@
 
 f_wrapper <- function(age_range,gender, treatment_names, n_samples){
   
-
+  treatment_names = as.character(treatment_names)
+  gender = as.character(gender)
+  age_range = as.character(age_range)
+  
   initial_age = substring(age_range, 1, 2)
   finial_age = substring(age_range, 4, 6)
   
@@ -19,15 +22,15 @@ f_wrapper <- function(age_range,gender, treatment_names, n_samples){
   state_names <- paste("State", c("Post TKR <3 years", "Post TKR >=3 years < 10 years", "Post TKR >=10 years", 
                                   "Early revision",  "middle revision", "late revision", "second revision", "Death"))
   
-
-
+  
+  
   
   input_parameters <- generate_input_parameters(n_samples, sensitivity = NULL)
   
   # Run the Markov model to get the model outputs
   model_outputs <- generate_net_benefit(input_parameters, 
                                         lambda = 20000)
-
+  
   return(model_outputs) 
 }
 
@@ -36,20 +39,20 @@ ui  <- fluidPage (#creates empty page
   
   # title of app
   titlePanel("Knips cohort Markov Model in Shiny"),
-  #layout is a sidebar-layout
+  #layout is a sidebar—layout
   sidebarLayout(
     sidebarPanel(#open sidebar panel
       #input type 
       selectInput(inputId ="SI_gender",label ="Gender",
-                  choices = c("female", "male"), 
+                  choices = list("female", "male"), 
                   selected = "female"),
       selectInput(inputId ="SI_age_range",label ="Age range",
-                  choices = c("0-55", "55-64"), 
+                  choices = list("0-55", "55-64"), 
                   selected = "55-64"),
       checkboxGroupInput(inputId ="SI_treatment_names",
                          label = "Treatment name",
-                         choices = paste("Implant", c("MoP Cem CR_Fix Mod", "MoP Cem CR_Fix Mono", "MoP Cem CR_Mob Mod")),
-                         selected = paste("Implant", c("MoP Cem CR_Fix Mod", "MoP Cem CR_Fix Mono", "MoP Cem CR_Mob Mod")),
+                         choices = list("Implant MoP Cem CR_Fix Mod", "Implant MoP Cem CR_Fix Mono", "Implant MoP Cem CR_Mob Mod"),
+                         selected = list("Implant MoP Cem CR_Fix Mod", "Implant MoP Cem CR_Fix Mono", "Implant MoP Cem CR_Mob Mod"),
                          inline = TRUE),
       numericInput(inputId ="SI_n_samples",
                    label ="Number of samples",
@@ -87,15 +90,15 @@ server = function(input, output){
                  #Run  model function with Shiny inputs
                  
                  model_outputs = f_wrapper(age_range = input$SI_age_range,
-                                          gender = input$SI_gender,  # maximum age of follow up default is 110
-                                          treatment_names = input$SI_treatment_names,
-                                          n_samples = input$SI_n_samples)
+                                           gender = input$SI_gender,  # maximum age of follow up default is 110
+                                           treatment_names = input$SI_treatment_names,
+                                           n_samples = input$SI_n_samples)
                  #model_outputs = f_wrapper(age_range = "55-64",
-                                           #gender = "female",  # maximum age of follow up default is 110
-                                           #treatment_names = paste("Implant", c("MoP Cem CR_Fix Mod", "MoP Cem CR_Fix Mono", "MoP Cem CR_Mob Mod")),
-                                           #n_samples = 10)
+                 #gender = "female",  # maximum age of follow up default is 110
+                 #treatment_names = paste("Implant", c("MoP Cem CR_Fix Mod", "MoP Cem CR_Fix Mono", "MoP Cem CR_Mob Mod")),
+                 #n_samples = 10)
                  
-                 #-- CREATE COST EFFECTIVENESS TABLE --#
+                 #—— CREATE COST EFFECTIVENESS TABLE ——#
                  
                  #renderTable continuously updates table
                  output$SO_icer_table =renderTable({
@@ -130,15 +133,15 @@ server = function(input, output){
                    
                    icer_table = data.frame(results_matrix)
                    
-                   #close data-frame
-                   #round the data-frame to two digits
+                   #close data—frame
+                   #round the data—frame to two digits
                    
                    #print the results table
                    # df_res_table
                    
                  }) 
                  #table plot end.
-                 #-- CREATE COST EFFECTIVENESS PLANE --#
+                 #—— CREATE COST EFFECTIVENESS PLANE ——#
                  
                  #render plot repeatedly updates.
                  output$SO_CE_plane =renderPlot({
