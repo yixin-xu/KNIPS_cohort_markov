@@ -14,7 +14,7 @@ generate_state_qalys <- function(input_parameters, sensitivity = NULL) {
   # State utilities are a mixture of state event  utilities, and disutilities of transient events
   
   
-
+  multi_disutilities = rlnorm(n_samples, log(4.5), log(1.8))
   
   norm_disutilities <- rnorm(n_samples, mean = as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),14]),  sqrt((as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),17])^2+(as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),18])^2))))
   
@@ -27,19 +27,19 @@ generate_state_qalys <- function(input_parameters, sensitivity = NULL) {
   }
   for(treatment_name in treatment_names) {
     event_disutilities[ ,treatment_name , "State Post TKR <3 years"] <- norm_disutilities * 
-      (1 - exp(-exp(input_parameters[, paste0("log_rate_1st_revision_<3", treatment_name)])))
+      (1 - exp(-exp(input_parameters[, paste0("log_rate_1st_revision_<3", treatment_name)])))* multi_disutilities/2
     event_disutilities[ ,treatment_name , "State Post TKR >=3 years < 10 years"] <- norm_disutilities * 
-      (1 - exp(-exp(input_parameters[, paste0("log_rate_1st_revision_3-10", treatment_name)])))
+      (1 - exp(-exp(input_parameters[, paste0("log_rate_1st_revision_3-10", treatment_name)])))* multi_disutilities/2
     event_disutilities[ ,treatment_name , "State Post TKR >=10 years"] <- norm_disutilities * 
-      (1 - exp(-exp(input_parameters[, paste0("log_rate_1st_revision_>10", treatment_name)])))
+      (1 - exp(-exp(input_parameters[, paste0("log_rate_1st_revision_>10", treatment_name)])))* multi_disutilities/2
     
   }
   
   
-  event_disutilities[ , , "State Early revision"] <- norm_disutilities * (1 - exp(-exp(input_parameters[ , "log_rate_2nd_revision_early"])))
-  event_disutilities[ , , "State middle revision"] <- norm_disutilities * (1 - exp(-exp(input_parameters[ , "log_rate_2nd_revision_middle"])))
-  event_disutilities[ , , "State late revision"] <- norm_disutilities * (1 - exp(-exp(input_parameters[ , "log_rate_2nd_revision_late"])))
-  event_disutilities[ , , "State second revision"] <- norm_disutilities * (1 - exp(-exp(input_parameters[ , "log_rate_higher_revision"])))
+  event_disutilities[ , , "State Early revision"] <- norm_disutilities * (1 - exp(-exp(input_parameters[ , "log_rate_2nd_revision_early"])))* multi_disutilities/2
+  event_disutilities[ , , "State middle revision"] <- norm_disutilities * (1 - exp(-exp(input_parameters[ , "log_rate_2nd_revision_middle"])))* multi_disutilities/2
+  event_disutilities[ , , "State late revision"] <- norm_disutilities * (1 - exp(-exp(input_parameters[ , "log_rate_2nd_revision_late"])))* multi_disutilities/2
+  event_disutilities[ , , "State second revision"] <- norm_disutilities * (1 - exp(-exp(input_parameters[ , "log_rate_higher_revision"])))* multi_disutilities/2
   
   
   state_utilities[, , "State Post TKR <3 years"] = rep(input_parameters[ ,"qalys_State Post TKR <3 years"], n= n_treatments) + event_disutilities[, , "State Post TKR <3 years"]
