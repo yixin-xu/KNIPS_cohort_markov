@@ -14,7 +14,7 @@ generate_state_qalys <- function(input_parameters, sensitivity = NULL) {
   # State utilities are a mixture of state event  utilities, and disutilities of transient events
   
   
-  multi_disutilities = rlnorm(n_samples, log(4.5), log(1.8))
+  multi_disutilities = rlnorm(n_samples, log(4.5), log(1.5))
   
   norm_disutilities <- rnorm(n_samples, mean = as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),14]),  sqrt((as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),17])^2+(as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),18])^2))))
   
