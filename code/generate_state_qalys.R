@@ -4,7 +4,7 @@
 
 generate_state_qalys <- function(input_parameters, sensitivity = NULL) {
   
-  data_directory <- "C:/Users/yx18392/Desktop/knips/data/rate"
+ 
   utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities")
   un_utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities_unadjusted")
  
