@@ -19,8 +19,8 @@ generate_net_benefit <- function(input_parameters, lambda = 20000) {
   state_costs[is.na(state_costs)] <- 0
   state_qalys[is.na(state_qalys)] <- 0
   
-  data_directory <- "C:/Users/yx18392/Desktop/knips/data/rate"
-  mortality <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "mortality")
+ 
+  mortality <- read_excel("data/cohort model inputs.xlsx")
   # Implant costs (transpose to keep convention of n_implants, n_samples)
   implant_costs <- t(input_parameters[, grepl("implant_cost", colnames(input_parameters))])
   rownames(implant_costs) <- treatment_names
