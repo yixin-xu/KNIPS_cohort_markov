@@ -5,9 +5,9 @@
 generate_state_qalys <- function(input_parameters, sensitivity = NULL) {
   
   data_directory <- "C:/Users/yx18392/Desktop/knips/data/rate"
-  utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities")
-  un_utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities_unadjusted")
-  
+  utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities")
+  un_utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities_unadjusted")
+ 
   # Construct array of state utilities with default value 0
   state_utilities <- array(dim = c(n_samples, n_treatments, n_states), dimnames = list(NULL, treatment_names,state_names))
   event_disutilities <- array(dim = c(n_samples, n_treatments, n_states), dimnames = list(NULL, treatment_names,state_names))

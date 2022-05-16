@@ -10,9 +10,9 @@ generate_transition_matrices <- function(input_parameters, n_cycles=50, sensitiv
                                dimnames = list(NULL, treatment_names, NULL, state_names, state_names))
   
   
-  data_directory <- "C:/Users/yx18392/Desktop/knips/data/rate"
-  lifetime <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "UK_lifetables")
-  mortality <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "mortality")
+  lifetime <- read_excel("data/cohort model inputs.xlsx", sheet = "UK_lifetables")
+  mortality <- read_excel("data/cohort model inputs.xlsx", sheet = "mortality")
+  
   
   # HT: All the death probabilities should be the same. The i_cycle in the Markov loop already counts the increased age by the time patients enter the later states
   # For example, using age 62 for "State Post TKR >=3 years < 10 years" means that patients entering "State Post TKR <3 years" at age 60

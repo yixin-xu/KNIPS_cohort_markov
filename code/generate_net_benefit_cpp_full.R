@@ -6,8 +6,7 @@ library(dplyr)
 # Uses the Rcpp package
 require(Rcpp)
 # Compiles the C++ file for the Markov loop
-code_directory <- "C:/Users/yx18392/Desktop/knips/cohort markov model"
-Rcpp::sourceCpp(file = paste0(code_directory, "/rcpp_loop_full.cpp"))
+Rcpp::sourceCpp("code/rcpp_loop_full.cpp")
 
 
 generate_net_benefit <- function(input_parameters, lambda = 20000) {

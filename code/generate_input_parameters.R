@@ -13,21 +13,11 @@ generate_input_parameters <- function(n_samples, sensitivity = NULL) {
   input_parameters <- array(dim = c(n_samples, n_parameters), dimnames = list(NULL, parameter_names))
   
   # data: female 55-64 years old group
-  data_directory <- "C:/Users/yx18392/Desktop/knips/data/rate"
-  setwd('C:/Users/yx18392/Desktop/knips/data/rate')
-  lograte_revision <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "revision_log_rate")
-  costs <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "costs")
-  utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities")
-  un_utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities_unadjusted")
-  
-  
-  
-  if(is.infinite(finial_age)) {
-    # Above age_range[1]
-    log_rate_1st_revision = read_excel(paste0(gender,"-", initial_age, "-",  "rate.xlsx"))  
-  }else{
-    log_rate_1st_revision = read_excel(paste0(gender, "-", initial_age,"-",  "rate.xlsx"))
-  }
+  lograte_revision <- read_excel("data/cohort model inputs.xlsx", sheet = "revision_log_rate")
+  costs <- read_excel("data/cohort model inputs.xlsx", sheet = "costs")
+  utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities")
+  un_utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities_unadjusted")
+  log_rate_1st_revision <- read_excel(paste0("data/", paste0(gender, "-", initial_age,"-",  "rate.xlsx")))
   
   log_rate_1st_revision[,2:10]= log(log_rate_1st_revision[,2:10])
   
