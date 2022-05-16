@@ -16,7 +16,8 @@ generate_state_qalys <- function(input_parameters, sensitivity = NULL) {
   
   multi_disutilities = rlnorm(n_samples, log(4.5), log(1.5))
   
-  norm_disutilities <- rnorm(n_samples, mean = as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),14]),  sqrt((as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),17])^2+(as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),18])^2))))
+  norm_disutilities <- rnorm(n_samples, mean = as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$Category)),"disutilities"]),  
+                             sqrt((as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$Category)),"SE_pre"])^2+(as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$Category)),"SE_ad_6 months after"])^2))))
   
   
   

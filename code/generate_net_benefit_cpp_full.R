@@ -20,7 +20,7 @@ generate_net_benefit <- function(input_parameters, lambda = 20000) {
   state_qalys[is.na(state_qalys)] <- 0
   
  
-  mortality <- read_excel("data/cohort model inputs.xlsx")
+  mortality <- read_excel("data/cohort model inputs.xlsx", sheet = "mortality")
   # Implant costs (transpose to keep convention of n_implants, n_samples)
   implant_costs <- t(input_parameters[, grepl("implant_cost", colnames(input_parameters))])
   rownames(implant_costs) <- treatment_names
@@ -41,8 +41,8 @@ generate_net_benefit <- function(input_parameters, lambda = 20000) {
   
   
   # Assume everyone starts in the post_thr state
-  primary_mortality=rep(rnorm(n_samples, mean = as.numeric(mortality[2,3]), 
-                              sd = (as.numeric(mortality[2,6])-as.numeric(mortality[2,5]))/2*1.96), each =n_treatments)
+  primary_mortality=rep(rnorm(n_samples, mean = as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"Primary estimate"]), 
+                              sd = (as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"Primary 95%CI high"])-as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"Primary 95%CI low"])/2*1.96)), each =n_treatments)
   cohort_vectors[cohort_vectors$cycle == 1, "State Post TKR <3 years"] <- 1-primary_mortality
   cohort_vectors[cohort_vectors$cycle == 1, "State Death"] <- primary_mortality
   # All other proportions start at zero by default when setting up data frame
