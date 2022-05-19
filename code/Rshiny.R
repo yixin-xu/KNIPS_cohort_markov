@@ -15,7 +15,10 @@ source('code/generate_state_qalys.R')
 source('code/generate_state_costs.R')
 source('code/generate_net_benefit_cpp_full.R')
 
-treatment_names_global <- list("Implant MoP Cem CR_Fix Mod", "Implant MoP Cem CR_Fix Mono", "Implant MoP Cem CR_Mob Mod")
+treatment_names_global <- list("Implant MoP Cem CR_Fix Mod","Implant MoP Cem CR_Fix Mono",  "Implant MoP Cem CR_Mob Mod",
+                               "Implant MoP Cem PS_Fix Mod", "Implant MoP Cem PS_Mob Mod",  "Implant MoP Cem Con_Con Mod",
+                               "Implant MoP Unc CR_Fix Mod", "Implant MoP Unc CR_Mob Mod", "Implant MoP Unc PS_Fix Mod",
+                               "Implant MoP Hyb CR_Fix Mod", "Implant OX Cem CR_Fix Mod", "Implant OX Cem PS_Fix Mod")
 n_treatments_global <- length(treatment_names_global)
 
 #n_states <- 8
@@ -87,12 +90,18 @@ ui  <- fluidPage (#creates empty page
                   choices = list("female", "male"), 
                   selected = "female"),
       selectInput(inputId ="SI_age_range",label ="Age range",
-                  choices = list("0-55", "55-64"), 
+                  choices = list("0-55", "55-64","65-74", "75-84", "85-Inf"),
                   selected = "55-64"),
       checkboxGroupInput(inputId ="SI_treatment_names",
                          label = "Treatment name",
-                         choices = list("Implant MoP Cem CR_Fix Mod", "Implant MoP Cem CR_Fix Mono", "Implant MoP Cem CR_Mob Mod"),
-                         selected = list("Implant MoP Cem CR_Fix Mod", "Implant MoP Cem CR_Fix Mono", "Implant MoP Cem CR_Mob Mod"),
+                         choices = list("Implant MoP Cem CR_Fix Mod","Implant MoP Cem CR_Fix Mono",  "Implant MoP Cem CR_Mob Mod",
+                                        "Implant MoP Cem PS_Fix Mod", "Implant MoP Cem PS_Mob Mod",  "Implant MoP Cem Con_Con Mod",
+                                        "Implant MoP Unc CR_Fix Mod", "Implant MoP Unc CR_Mob Mod", "Implant MoP Unc PS_Fix Mod",
+                                        "Implant MoP Hyb CR_Fix Mod", "Implant OX Cem CR_Fix Mod", "Implant OX Cem PS_Fix Mod"),
+                         selected = list("Implant MoP Cem CR_Fix Mod","Implant MoP Cem CR_Fix Mono",  "Implant MoP Cem CR_Mob Mod",
+                                         "Implant MoP Cem PS_Fix Mod", "Implant MoP Cem PS_Mob Mod",  "Implant MoP Cem Con_Con Mod",
+                                         "Implant MoP Unc CR_Fix Mod", "Implant MoP Unc CR_Mob Mod", "Implant MoP Unc PS_Fix Mod",
+                                         "Implant MoP Hyb CR_Fix Mod", "Implant OX Cem CR_Fix Mod", "Implant OX Cem PS_Fix Mod"),
                          inline = TRUE),
       numericInput(inputId ="SI_n_samples",
                    label ="Number of samples",
