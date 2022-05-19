@@ -42,11 +42,11 @@ event_names <- c("early primary", "middle primary", "late primary", "early revis
 age_range <- "0-55"
 
 initial_age <- substring(age_range, 1, 2)
-finial_age <- substring(age_range, 4, 6)
+final_age <- substring(age_range, 4, 6)
 
 
-if(is.infinite(as.numeric(finial_age))) {starting_age <- 90 }else{
-if (initial_age == "0-") {starting_age <- 53}else{starting_age <- ceiling((as.numeric(finial_age)+as.numeric(initial_age))/2)}
+if(is.infinite(as.numeric(final_age))) {starting_age <- 90 }else{
+if (initial_age == "0-") {starting_age <- 53}else{starting_age <- ceiling((as.numeric(final_age)+as.numeric(initial_age))/2)}
 }
 # Specify the gender
 gender <- "female"
@@ -57,10 +57,23 @@ if (initial_age == "0-") {n_cycles <- 50}else{
 
 # Generate the input parameters
 # This will be converted into transition matrix, state costs, and state utilities
-input_parameters <- generate_input_parameters(n_samples)
+input_parameters <- generate_input_parameters(n_samples,
+                                              treatment_names = treatment_names, 
+                                              state_names = state_names,
+                                              initial_age = initial_age,
+                                              final_age = final_age,
+                                              starting_age = starting_age,
+                                              gender = gender)
 
 # Run the Markov model to get the model outputs
-model_outputs <- generate_net_benefit(input_parameters, 
+model_outputs <- generate_net_benefit(input_parameters,
+                                      treatment_names = treatment_names, 
+                                      state_names = state_names,
+                                      initial_age = initial_age,
+                                      final_age = final_age,
+                                      starting_age = starting_age,
+                                      gender = gender,
+                                      n_cycles = n_cycles,
                                       lambda = 20000)
 
 ####################################################################################################

@@ -9,12 +9,44 @@ require(Rcpp)
 Rcpp::sourceCpp("code/rcpp_loop_full.cpp")
 
 
-generate_net_benefit <- function(input_parameters, lambda = 20000) {
+generate_net_benefit <- function(input_parameters, treatment_names = treatment_names, 
+                                 state_names = state_names,
+                                 initial_age = initial_age,
+                                 final_age = final_age,
+                                 starting_age = starting_age,
+                                 gender = gender, 
+                                 n_cycles = n_cycles,
+                                 lambda = 20000) {
+  
+  n_treatments <- length(treatment_names)
+  n_samples <- dim(input_parameters)[1]
+  n_states <- length(state_names)
+  
   # First generate components needed for simulation
-  transition_matrices <- generate_transition_matrices(input_parameters)
-  transition_matrices_df <- convert_transition_matrices_to_df(transition_matrices)
-  state_costs <- generate_state_costs(input_parameters)
-  state_qalys <- generate_state_qalys(input_parameters)
+  transition_matrices <- generate_transition_matrices(input_parameters,
+                                                      treatment_names = treatment_names, 
+                                                      state_names = state_names,
+                                                      initial_age = initial_age,
+                                                      final_age = final_age,
+                                                      starting_age = starting_age,
+                                                      gender = gender,
+                                                      n_cycles = n_cycles)
+  transition_matrices_df <- convert_transition_matrices_to_df(transition_matrices,
+                                                              state_names = state_names)
+  state_costs <- generate_state_costs(input_parameters,
+                                      treatment_names = treatment_names, 
+                                      state_names = state_names,
+                                      initial_age = initial_age,
+                                      final_age = final_age,
+                                      starting_age = starting_age,
+                                      gender = gender)
+  state_qalys <- generate_state_qalys(input_parameters,
+                                      treatment_names = treatment_names, 
+                                      state_names = state_names,
+                                      initial_age = initial_age,
+                                      final_age = final_age,
+                                      starting_age = starting_age,
+                                      gender = gender)
   
   state_costs[is.na(state_costs)] <- 0
   state_qalys[is.na(state_qalys)] <- 0

@@ -1,7 +1,10 @@
 # Function to convert multidimensional array of transition matrices to a dataframe
 # Howard Thom 16Feb2022
 
-convert_transition_matrices_to_df <- function(transition_matrices) {
+convert_transition_matrices_to_df <- function(transition_matrices,
+                                              state_names= state_names) {
+  
+  n_states <- length(state_names)
   
   # Convert transition matrices array to a dataframe
   # Must be in cycle, implant, sample, "from state", "to states" order

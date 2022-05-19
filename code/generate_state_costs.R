@@ -3,8 +3,18 @@
 # Function to convert input parameters to state costs
 
 
-generate_state_costs<-function(input_parameters,sensitivity=NULL) {
+generate_state_costs<-function(input_parameters,
+                               treatment_names = treatment_names, 
+                               state_names = state_names,
+                               initial_age = initial_age,
+                               final_age = final_age,
+                               starting_age = starting_age,
+                               gender = gender,
+                               sensitivity=NULL) {
   
+  n_treatments <- length(treatment_names)
+  n_samples <- dim(input_parameters)[1]
+  n_states <- length(state_names)
   
   # Construct array of state costs with default value of zero
   state_costs <- array(0, dim = c(n_samples, n_treatments, n_states),

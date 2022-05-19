@@ -4,7 +4,19 @@
 # Output is a 3-dimensional array of n_samples x n_treatments x n_states x n_states
 
 
-generate_transition_matrices <- function(input_parameters, n_cycles=50, sensitivity = NULL) {
+generate_transition_matrices <- function(input_parameters, 
+                                         treatment_names = treatment_names, 
+                                         state_names = state_names,
+                                         initial_age = initial_age,
+                                         final_age = final_age,
+                                         starting_age = starting_age,
+                                         gender = gender,
+                                         n_cycles=50, sensitivity = NULL) {
+  
+  n_treatments <- length(treatment_names)
+  n_samples <- dim(input_parameters)[1]
+  n_states <- length(state_names)
+  
   # create transition matrix 
   transition_matrices <- array(0, dim = c(n_cycles, n_treatments, n_samples, n_states, n_states),
                                dimnames = list(NULL, treatment_names, NULL, state_names, state_names))
@@ -74,7 +86,7 @@ generate_transition_matrices <- function(input_parameters, n_cycles=50, sensitiv
       transition_matrices[ i_cycle, treatment_name, , "State second revision", "State Death"] = rep(1-exp(-as.numeric(lifetime[starting_age + i_cycle - 1, 2])), n_samples) + 
         (1 - exp(-exp(input_parameters[ , "log_rate_higher_revision"])))*higher_mortality
       
-      if(is.infinite(as.numeric(finial_age))) {
+      if(is.infinite(as.numeric(final_age))) {
         transition_matrices[ i_cycle, treatment_name, , "State Post TKR >=10 years", "State Death"] = rep(1-exp(-as.numeric(lifetime[101, 2])), n_samples) + 
           (1 - exp(-exp(input_parameters[, paste0("log_rate_1st_revision_>10", treatment_name)])))*first_mortality
         transition_matrices[ i_cycle, treatment_name, , "State late revision", "State Death"] = rep(1-exp(-as.numeric(lifetime[101, 2])), n_samples) + 

@@ -1,4 +1,12 @@
-generate_input_parameters <- function(n_samples, sensitivity = NULL) {
+generate_input_parameters <- function(n_samples, treatment_names = treatment_names, 
+                                      state_names = state_names,
+                                      initial_age = initial_age,
+                                      final_age = final_age,
+                                      starting_age = starting_age,
+                                      gender = gender,
+                                      sensitivity = NULL) {
+  
+  n_treatments <- length(treatment_names)
   
   
   parameter_names <- c(paste0("log_rate_1st_revision_<3", treatment_names),
@@ -143,7 +151,7 @@ generate_input_parameters <- function(n_samples, sensitivity = NULL) {
   input_parameters[ , "log_rate_2nd_revision_middle"] <- with(lograte_revision, rnorm(n_samples, mean =  mean[parameter == "middle_revision"],
                                                                                       sd = ((UL[parameter == "middle_revision"]-LL[parameter == "middle_revision"])/2*1.96)))
   
-  if(is.infinite(as.numeric(finial_age))) {
+  if(is.infinite(as.numeric(final_age))) {
     input_parameters[ , "log_rate_2nd_revision_late"] <- NaN}else{
       input_parameters[ , "log_rate_2nd_revision_late"] <- with(lograte_revision, rnorm(n_samples, mean =  mean[parameter == "late_revision"],
                                                                                         sd = ((UL[parameter == "late_revision"]-LL[parameter == "late_revision"])/2*1.96)))

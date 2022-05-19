@@ -2,9 +2,19 @@
 # Advanced Markov models lecture
 # Function to convert input parameters state utilities
 
-generate_state_qalys <- function(input_parameters, sensitivity = NULL) {
+generate_state_qalys <- function(input_parameters, 
+                                 treatment_names = treatment_names, 
+                                 state_names = state_names,
+                                 initial_age = initial_age,
+                                 final_age = final_age,
+                                 starting_age = starting_age,
+                                 gender = gender,
+                                 sensitivity = NULL) {
   
- 
+  n_treatments <- length(treatment_names)
+  n_samples <- dim(input_parameters)[1]
+  n_states <- length(state_names)
+  
   utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities")
   un_utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities_unadjusted")
  
