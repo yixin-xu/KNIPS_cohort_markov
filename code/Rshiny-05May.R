@@ -1,3 +1,25 @@
+library(BCEA)
+library(readxl)
+library(ggplot2)
+library(reshape)
+library(dplyr)
+library(shiny)
+
+set.seed(14142234)
+
+
+source('code/generate_input_parameters.R')
+source('code/generate_transition_matrices.R')
+source('code/convert_transition_matrices_to_df.R')
+source('code/generate_state_qalys.R')
+source('code/generate_state_costs.R')
+source('code/generate_net_benefit_cpp_full.R')
+
+n_states <- 8
+state_names <- paste("State", c("Post TKR <3 years", "Post TKR >=3 years < 10 years", "Post TKR >=10 years", 
+                                "Early revision",  "middle revision", "late revision", "second revision", "Death"))
+
+
 
 f_wrapper <- function(age_range,gender, treatment_names, n_samples){
   
@@ -84,19 +106,15 @@ ui  <- fluidPage (#creates empty page
 server = function(input, output){
   
   #when action button pressed ...
-  observeEvent(input$run_model,
-               ignoreNULL = F, {
-                 
-                 #Run  model function with Shiny inputs
-                 
-                 model_outputs = f_wrapper(age_range = input$SI_age_range,
-                                           gender = input$SI_gender,  # maximum age of follow up default is 110
-                                           treatment_names = input$SI_treatment_names,
-                                           n_samples = input$SI_n_samples)
-                 #model_outputs = f_wrapper(age_range = "55-64",
-                 #gender = "female",  # maximum age of follow up default is 110
-                 #treatment_names = paste("Implant", c("MoP Cem CR_Fix Mod", "MoP Cem CR_Fix Mono", "MoP Cem CR_Mob Mod")),
-                 #n_samples = 10)
+  data <- reactive({
+    
+    model_outputs = f_wrapper(age_range = input$SI_age_range,
+                              gender = input$SI_gender,  # maximum age of follow up default is 110
+                              treatment_names = input$SI_treatment_names,
+                              n_samples = input$SI_n_samples)
+    
+    return(model_outputs)
+  })
                  
                  #—— CREATE COST EFFECTIVENESS TABLE ——#
                  
@@ -156,7 +174,7 @@ server = function(input, output){
                              pos = c(1,1))
                  })#renderplot end
                  
-               })#Observe event end
-}#Server end
+               }
 
 shinyApp(ui , server)
+
