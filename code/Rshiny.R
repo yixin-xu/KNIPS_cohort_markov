@@ -116,10 +116,10 @@ ui  <- fluidPage (#creates empty page
     #open main panel
     mainPanel(
       tabsetPanel(
-      #  tabPanel(
-      #    title = "Results Table",
-      #    tableOutput(outputId ="SO_icer_table")
-      #  ),
+       tabPanel(
+          title = "Results Table",
+          tableOutput(outputId ="SO_icer_table")
+        ),
         tabPanel(
           title = "Cost-effectiveness Plane",
           plotOutput(outputId ="SO_CE_plane")
@@ -191,7 +191,7 @@ server = function(input, output){
     }
     
     icer_table = data.frame(results_matrix)
-    
+    icer_table
     #close data—frame
     #round the data—frame to two digits
     
