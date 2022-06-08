@@ -109,7 +109,7 @@ ui  <- fluidPage (#creates empty page
                    min= 0,
                    max= 1000),
       #action button runs model when pressed
-      actionButton(inputId ="run_model",
+      actionButton(inputId ="button",
                    label   ="Run model")
       
     ),#close sidebarPanel
@@ -140,8 +140,13 @@ server = function(input, output){
   #                                 n_samples = 10)
   
   #when action button pressed ...
-  data <- reactive({
+  #observeEvent(input$button,
+               #ignoreNULL = F, {
     
+  #data <- reactive({
+  observeEvent(input$button,{
+    
+    data <- reactive({
     treatment_names_local <- unlist(input$SI_treatment_names)
     n_treatments_local <- length(treatment_names_local)
     
@@ -154,7 +159,7 @@ server = function(input, output){
                 "n_treatments_local" = n_treatments_local,
                 "model_outputs" = model_outputs))
   })
-  
+  #})  
   
   #—— CREATE COST EFFECTIVENESS TABLE ——#
   
@@ -190,7 +195,7 @@ server = function(input, output){
       
     }
     
-    icer_table = data.frame(results_matrix)
+    #icer_table = data.frame(results_matrix)
     icer_table
     #close data—frame
     #round the data—frame to two digits
@@ -217,6 +222,7 @@ server = function(input, output){
               pos = c(1,1))
   })#renderplot end
   
+  }) 
 }
 
 shinyApp(ui , server)
