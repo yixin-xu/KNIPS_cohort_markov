@@ -15,8 +15,8 @@ generate_state_qalys <- function(input_parameters,
   n_samples <- dim(input_parameters)[1]
   n_states <- length(state_names)
   
-  utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities")
-  un_utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities_unadjusted")
+  utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities")
+  un_utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities_unadjusted")
  
   # Construct array of state utilities with default value 0
   state_utilities <- array(dim = c(n_samples, n_treatments, n_states), dimnames = list(NULL, treatment_names,state_names))
@@ -26,8 +26,8 @@ generate_state_qalys <- function(input_parameters,
   
   multi_disutilities = rlnorm(n_samples, log(4.5), log(1.5))
   
-  norm_disutilities <- rnorm(n_samples, mean = as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$Category)),"disutilities"]),  
-                             sqrt((as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$Category)),"SE_pre"])^2+(as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$Category)),"SE_ad_6 months after"])^2))))
+  norm_disutilities <- rnorm(n_samples, mean = as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),"disutilities"]),  
+                             sqrt((as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),"SE_pre"])^2+(as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),"SE_ad_6 months after"])^2))))
   
   
   

@@ -22,8 +22,8 @@ generate_transition_matrices <- function(input_parameters,
                                dimnames = list(NULL, treatment_names, NULL, state_names, state_names))
   
   
-  lifetime <- read_excel("data/cohort model inputs.xlsx", sheet = "UK_lifetables")
-  mortality <- read_excel("data/cohort model inputs.xlsx", sheet = "mortality")
+  lifetime <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "UK_lifetables")
+  mortality <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "mortality")
   
   
   # HT: All the death probabilities should be the same. The i_cycle in the Markov loop already counts the increased age by the time patients enter the later states
@@ -138,6 +138,15 @@ generate_transition_matrices <- function(input_parameters,
                                       sample(1:n_samples, 1), , ]) == 1) != 1) {
     stop("Rows must sum to 1!")
   }
+  i_cycle_sample <- sample(1:n_cycles, 1) 
+  treatment_sample <- sample(treatment_names, 1)
+  i_sample_sample <- sample(1:n_samples, 1)
+  if(prod(round(rowSums(transition_matrices[i_cycle_sample,
+                                            treatment_sample,
+                                            i_sample_sample, , ]), digits = 6) == 1) != 1) {
+    stop("Rows must sum to 1!")
+  } 
+  
   
   return(transition_matrices)
 }

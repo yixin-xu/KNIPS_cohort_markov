@@ -73,8 +73,8 @@ generate_net_benefit <- function(input_parameters, treatment_names = treatment_n
   
   
   # Assume everyone starts in the post_thr state
-  primary_mortality=rep(rnorm(n_samples, mean = as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"Primary estimate"]), 
-                              sd = (as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"Primary 95%CI high"])-as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"Primary 95%CI low"])/2*1.96)), each =n_treatments)
+  primary_mortality=rep(rnorm(n_samples, mean = as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"estimate...3"]), 
+                              sd = (as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI high...6"])-as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI low...5"])/2*1.96)), each =n_treatments)
   cohort_vectors[cohort_vectors$cycle == 1, "State Post TKR <3 years"] <- 1-primary_mortality
   cohort_vectors[cohort_vectors$cycle == 1, "State Death"] <- primary_mortality
   # All other proportions start at zero by default when setting up data frame
@@ -153,7 +153,7 @@ generate_net_benefit <- function(input_parameters, treatment_names = treatment_n
   # sapply inverts the matrices to uninvert
   total_costs <- t(total_costs)
   total_qalys <- t(total_qalys)
-  
+  lambda = 20000
   # Calculate net benefit and incremental net benefit at
   # willingness-to-pay that was supplied
   net_benefit <- total_qalys * lambda - total_costs

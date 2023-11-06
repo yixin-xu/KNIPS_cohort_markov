@@ -21,11 +21,12 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
   input_parameters <- array(dim = c(n_samples, n_parameters), dimnames = list(NULL, parameter_names))
   
   # data: female 55-64 years old group
-  lograte_revision <- read_excel("data/cohort model inputs.xlsx", sheet = "revision_log_rate")
-  costs <- read_excel("data/cohort model inputs.xlsx", sheet = "costs")
-  utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities")
-  un_utilities <- read_excel("data/cohort model inputs.xlsx", sheet = "utilities_unadjusted")
-  log_rate_1st_revision <- read_excel(paste0("data/", paste0(gender, "-", initial_age,"-",  "rate.xlsx")))
+  lifetables <- read_excel(paste0(data_directory, "/KNIPS Main input data.xlsx"), sheet = "uk_lifetables")
+  lograte_revision <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "revision_log_rate")
+  costs <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "costs")
+  utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities")
+  un_utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities_unadjusted")
+  log_rate_1st_revision <- read_excel(paste0(data_directory,"/", paste0(gender, "-", initial_age,"-",  "rate.xlsx")))
   
   log_rate_1st_revision[,2:10]= log(log_rate_1st_revision[,2:10])
   

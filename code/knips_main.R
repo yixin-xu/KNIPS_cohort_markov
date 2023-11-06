@@ -39,7 +39,7 @@ n_treatments <- length(treatment_names)
 event_names <- c("early primary", "middle primary", "late primary", "early revision", "middle revision", "late revision", "reresion")
 
 
-age_range <- "0-55"
+age_range <- "65-74"
 
 initial_age <- substring(age_range, 1, 2)
 final_age <- substring(age_range, 4, 6)
@@ -149,7 +149,7 @@ colnames(evpi_table) <- c("Per person", "Population")
 # https://www.njrcentre.org.uk/njrcentre/Patients/Joint-replacement-statistics#:~:text=In%20England%20and%20Wales%20there,the%20practice%20is%20growing%20rapidly.
 # This is regardless of age and gender but assume EVPI same for each category
 technology_horizon <- 10
-discounted_population_size <- sum((1/1.035)^(0:(technology_horizon - 1))) * 160000 
+discounted_population_size <- sum((1/1.035)^(0:(technology_horizon - 1))) * 0.2218 * 92185 
 
 # Total EVPI
 evpi_table["Total", c("Per person", "Population")] <-  knips_bcea$evi[201] * c(1, discounted_population_size)
