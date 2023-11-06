@@ -22,11 +22,11 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
   
   # data: female 55-64 years old group
   lifetables <- read_excel(paste0(data_directory, "/KNIPS Main input data.xlsx"), sheet = "uk_lifetables")
-  lograte_revision <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "revision_log_rate")
-  costs <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "costs")
-  utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities")
-  un_utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities_unadjusted")
-  log_rate_1st_revision <- read_excel(paste0(data_directory,"/", paste0(gender, "-", initial_age,"-",  "rate.xlsx")))
+  lograte_revision <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "revision_log_rate")
+  costs <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "costs")
+  utilities <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "utilities")
+  un_utilities <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "utilities_unadjusted")
+  log_rate_1st_revision <- read_excel(paste0(data_directory,"/", paste0(gender, "-", initial_age, "-", "rate.xlsx")))
   
   log_rate_1st_revision[,2:10]= log(log_rate_1st_revision[,2:10])
   
@@ -229,10 +229,16 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
   input_parameters[ , "cost_revision"] <- rep(as.numeric(costs[15,2]), n = n_samples) 
   
   # states qalys
+  if (ini_age == "50") {ini_age2 <- 0}else{
+    ini_age2 <- ini_age}
+  utility_row_index <- which(utilities[, "age"] == ini_age2 &
+                               utilities[, "gender"] == gender)
+  
+  
   input_parameters[ ,"qalys_State Post TKR <3 years"] <- input_parameters[ ,"qalys_State Post TKR >=3 years < 10 years"] <- input_parameters[ ,"qalys_State Post TKR >=10 years"] <-
-    rep(rnorm(n_samples, mean = as.numeric(utilities[2,5]), sd = (as.numeric(utilities[2,7])-as.numeric(utilities[2,6]))/2*1.96), n= n_treatments)
+    rep(rnorm(n_samples, mean = as.numeric(utilities[utility_row_index,6]), sd = (as.numeric(utilities[utility_row_index,8])-as.numeric(utilities[utility_row_index,7]))/2*1.96), n= n_treatments)
   input_parameters[ ,"qalys_State Early revision"] <- input_parameters[ ,"qalys_State middle revision"] <-  input_parameters[ ,"qalys_State late revision"] <- input_parameters[ ,"qalys_State second revision"] <-
-    rep(rnorm(n_samples, mean = as.numeric(utilities[2,11]), sd = (as.numeric(utilities[2,13])-as.numeric(utilities[2,12]))/2*1.96), n= n_treatments)
+    rep(rnorm(n_samples, mean = as.numeric(utilities[utility_row_index,12]), sd = (as.numeric(utilities[utility_row_index,14])-as.numeric(utilities[utility_row_index,13]))/2*1.96), n= n_treatments)
   input_parameters[ ,"qalys_State Death"]<- rep(rep(0, each = n_samples), n= n_treatments)
   
   
@@ -240,9 +246,9 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
   if(!is.null(sensitivity)) {
     if(sensitivity == "un_utilities") {
       input_parameters[ ,"qalys_State Post TKR <3 years"] <- input_parameters[ ,"qalys_State Post TKR >=3 years < 10 years"] <- input_parameters[ ,"qalys_State Post TKR >=10 years"] <- 
-        rep(rnorm(n_samples, mean = as.numeric(un_utilities[2,5]), sd = (as.numeric(un_utilities[2,7])-as.numeric(un_utilities[2,6]))/2*1.96), n= n_treatments)
+        rep(rnorm(n_samples, mean = as.numeric(un_utilities[utility_row_index,6]), sd = (as.numeric(un_utilities[utility_row_index,8])-as.numeric(un_utilities[utility_row_index,7]))/2*1.96), n= n_treatments)
       input_parameters[ ,"qalys_State Early revision"] <- input_parameters[ ,"qalys_State middle revision"] <-  input_parameters[ ,"qalys_State late revision"] <- input_parameters[ ,"qalys_State second revision"] <-
-        rep(rnorm(n_samples, mean = as.numeric(un_utilities[2,11]), sd = (as.numeric(un_utilities[2,13])-as.numeric(un_utilities[2,12]))/2*1.96), n= n_treatments)
+        rep(rnorm(n_samples, mean = as.numeric(un_utilities[utility_row_index,12]), sd = (as.numeric(un_utilities[utility_row_index,14])-as.numeric(un_utilities[utility_row_index,13]))/2*1.96), n= n_treatments)
       input_parameters[ ,"qalys_State Death"]<- rep(rep(0, each = n_samples), n= n_treatments)
     }
     if(sensitivity == "remove_2nd_higher_rate"){

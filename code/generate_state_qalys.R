@@ -15,25 +15,29 @@ generate_state_qalys <- function(input_parameters,
   n_samples <- dim(input_parameters)[1]
   n_states <- length(state_names)
   
-  utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities")
-  un_utilities <- read_excel(paste0(data_directory, "/cohort model inputs.xlsx"), sheet = "utilities_unadjusted")
+  utilities <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "utilities")
+  un_utilities <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "utilities_unadjusted")
+  
  
   # Construct array of state utilities with default value 0
   state_utilities <- array(dim = c(n_samples, n_treatments, n_states), dimnames = list(NULL, treatment_names,state_names))
   event_disutilities <- array(dim = c(n_samples, n_treatments, n_states), dimnames = list(NULL, treatment_names,state_names))
   # State utilities are a mixture of state event  utilities, and disutilities of transient events
-  
+  if (ini_age == "50") {ini_age2 <- 0}else{
+    ini_age2 <- ini_age}
+  utility_row_index <- which(utilities[, "age"] == ini_age2 &
+                               utilities[, "gender"] == gender)
   
   multi_disutilities = rlnorm(n_samples, log(4.5), log(1.5))
   
-  norm_disutilities <- rnorm(n_samples, mean = as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),"disutilities"]),  
-                             sqrt((as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),"SE_pre"])^2+(as.numeric(utilities[which(grepl(paste0(initial_age," ", gender),utilities$...1)),"SE_ad_6 months after"])^2))))
+  norm_disutilities <- rnorm(n_samples, mean = as.numeric(utilities[utility_row_index,"disutilities"]),  
+                             sqrt((as.numeric(utilities[utility_row_index,"SE_pre"])^2+(as.numeric(utilities[utility_row_index,"SE_ad_6 months after"])^2))))
   
   
   
   if(!is.null(sensitivity)) {
     if(sensitivity == "un_utilities") {
-      norm_disutilities <- rnorm(n_samples, mean = as.numeric(un_utilities[which(grepl(paste0(initial_age," ", gender),un_utilities$...1)),14]),  sqrt((as.numeric(un_utilities[which(grepl(paste0(initial_age," ", gender),un_utilities$...1)),17])^2+(as.numeric(un_utilities[which(grepl(paste0(initial_age," ", gender),un_utilities$...1)),18])^2))))
+      norm_disutilities <- rnorm(n_samples, mean = as.numeric(un_utilities[utility_row_index,15]),  sqrt((as.numeric(un_utilities[utility_row_index,18])^2+(as.numeric(un_utilities[utility_row_index,19])^2))))
     }
   }
   for(treatment_name in treatment_names) {

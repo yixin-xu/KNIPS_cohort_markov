@@ -52,7 +52,7 @@ generate_net_benefit <- function(input_parameters, treatment_names = treatment_n
   state_qalys[is.na(state_qalys)] <- 0
   
  
-  mortality <- read_excel("data/cohort model inputs.xlsx", sheet = "mortality")
+  mortality <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "mortality")
   # Implant costs (transpose to keep convention of n_implants, n_samples)
   implant_costs <- t(input_parameters[, grepl("implant_cost", colnames(input_parameters))])
   rownames(implant_costs) <- treatment_names
@@ -73,11 +73,25 @@ generate_net_benefit <- function(input_parameters, treatment_names = treatment_n
   
   
   # Assume everyone starts in the post_thr state
-  primary_mortality=rep(rnorm(n_samples, mean = as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"estimate...3"]), 
-                              sd = (as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI high...6"])-as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI low...5"])/2*1.96)), each =n_treatments)
+  primary_mortality=rep(abs(rnorm(n_samples, mean = as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"estimate...3"]), 
+                              sd = (as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI high...6"])-as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI low...5"])/2*1.96))), each =n_treatments)
   cohort_vectors[cohort_vectors$cycle == 1, "State Post TKR <3 years"] <- 1-primary_mortality
   cohort_vectors[cohort_vectors$cycle == 1, "State Death"] <- primary_mortality
   # All other proportions start at zero by default when setting up data frame
+  
+  #cohort = as.data.frame(cohort_vectors)
+  #cohort$all = rowSums(cohort[,4:11])
+  #cohort$nodeath = rowSums(cohort[,4:10])
+  #selected_cohort <- cohort[seq(1, nrow(cohort), by = 10), ]
+  #years = c(1:50)
+  #survival_probs <- matrix(data = NA, nrow = 12, ncol = 50)
+  #rownames(survival_probs) <- paste("Treatment", 1:12)
+  #colnames(survival_probs) <- paste("Cycle", 1:50)
+  
+  #for (i_treatment in 1:n_treatments){
+  #  survival_probs[i_treatment,] <-selected_cohort$nodeath[selected_cohort$treatments==i_treatment] 
+  #}
+  #survival_probs = 1-survival_probs
   
   
   # Build an array to store the costs and QALYs accrued per cycle
@@ -104,6 +118,18 @@ generate_net_benefit <- function(input_parameters, treatment_names = treatment_n
   # Pre-calculate the discount vector to reduce runtime
   discount_vector <- (1 / 1.035)^rep(c(0:(n_cycles-1)), each = 1)
   
+  #qaly_norm <- read_excel(paste0(data_directory, "/QALY_norm.xlsx"))
+  
+  #qaly_norm_row <- which(qaly_norm[, "Age"] == ini_age)
+  #qaly_norm_index <- as.numeric(qaly_norm[qaly_norm_row, gender])
+  
+  #multi_factor <- array(NA, n_cycles)
+  
+  #for (i in 1:n_cycles){
+  #  multi_factor[i] <- as.numeric(qaly_norm[which(qaly_norm[, "Age"] == ini_age+i), gender])/qaly_norm_index
+  #}
+  
+  
   
   # Main model code
   # Use lapply instead of loop
@@ -128,6 +154,7 @@ generate_net_benefit <- function(input_parameters, treatment_names = treatment_n
     # but in general allow this for optimization
     state_qalys_tr <- state_qalys[,i_treatment, ]
     
+   
     for(i_sample in 1:n_samples) {
       cohort_vectors_tr_sample <- cohort_vectors[c(0:(n_cycles-1)) * (n_treatments * n_samples) +
                                                    (i_treatment - 1) * n_samples + i_sample, c(4:(3+n_states))]
@@ -137,8 +164,10 @@ generate_net_benefit <- function(input_parameters, treatment_names = treatment_n
       # Sum  and discount to get total costs and qalys
       # Add implant costs to total costs
       total_costs_tr[i_sample] <- treatment_costs_tr[i_sample] + cycle_costs_tr[, i_sample] %*% discount_vector
-      total_qalys_tr[i_sample] <- cycle_qalys_tr[, i_sample] %*% discount_vector
+      total_qalys_tr[i_sample] <- cycle_qalys_tr[, i_sample] %*% discount_vector #%*% multi_factor
     }
+    
+  
     
     return(list(total_qalys = total_qalys_tr, total_costs = total_costs_tr))
     
