@@ -106,6 +106,8 @@ generate_transition_matrices <- function(input_parameters,
       transition_matrices[ i_cycle, treatment_name, , "State Post TKR <3 years", "State Post TKR >=3 years < 10 years"] = (1-transition_matrices[ i_cycle, treatment_name, , "State Post TKR <3 years", "State Early revision"]-
                                                                                                                              transition_matrices[i_cycle, treatment_name, , "State Post TKR <3 years", "State Death"])/4
       
+      
+      
       transition_matrices[i_cycle, treatment_name, , "State Post TKR >=3 years < 10 years", "State Post TKR >=10 years"] = (1-transition_matrices[ i_cycle, treatment_name, , "State Post TKR >=3 years < 10 years", "State middle revision"]-
                                                                                                                               transition_matrices[ i_cycle, treatment_name, , "State Post TKR >=3 years < 10 years", "State Death"])/8
       
@@ -117,8 +119,7 @@ generate_transition_matrices <- function(input_parameters,
         transition_matrices[i_cycle, treatment_name, , i_state, i_state] <- 1 - 
           apply(transition_matrices[i_cycle, treatment_name, , i_state, -i_state], c(1), sum, na.rm=TRUE)
       } # End loop over states
-      
-      transition_matrices[is.na(transition_matrices)] <- 0
+     
       
       #if(!is.null(sensitivity)) {
         #if(sensitivity == "remove_time"){
