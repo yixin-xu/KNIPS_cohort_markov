@@ -26,9 +26,7 @@ generate_net_benefit_lapply <- function(input_parameters, lambda = 20000) {
                                       starting_age = starting_age,
                                       gender = gender)
   
-  mortality <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "mortality")
-  primary_mortality=rep(abs(rnorm(n_samples, mean = as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"estimate...3"]), 
-                                  sd = (as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI high...6"])-as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI low...5"])/2*1.96))), each =n_treatments)
+  
   # Implant costs (transpose to keep convention of n_implants, n_samples)
   implant_costs <- t(input_parameters[, grepl("implant_cost", colnames(input_parameters))])
   rownames(implant_costs) <- treatment_names
@@ -37,8 +35,12 @@ generate_net_benefit_lapply <- function(input_parameters, lambda = 20000) {
   cohort_vectors <- array(dim = c(n_cycles, n_treatments, n_samples,  n_states), 
                           dimnames = list(NULL, treatment_names, NULL, state_names))
   
+  mortality <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "mortality")
+  primary_mortality=rep(abs(rnorm(n_samples, mean = as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"estimate...3"]), 
+                                  sd = (as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI high...6"])-as.numeric(mortality[which(grepl(paste0(initial_age," ", gender),mortality$Primary)),"95%CI low...5"])/2*1.96))), each =n_treatments)
+  
   # Assume everyone starts in the post_thr state
-  cohort_vectors[1, , , "State Post TKR <3 years"] <- 1-primary_mortality 
+  cohort_vectors[1, , , "State Post TKR <3 years"] <- 1-primary_mortality
   # All other proportions start at zero
   cohort_vectors[1, , , "State Death"] <- primary_mortality
   
@@ -66,13 +68,13 @@ generate_net_benefit_lapply <- function(input_parameters, lambda = 20000) {
   # Pre-calculate the discount vector to reduce runtime
   discount_vector <- (1 / 1.035)^rep(c(0:(n_cycles-1)), each = 1)
   
-  
+
   # Main model code
   # Use lapply instead of loop
   lapply(c(1:n_treatments), function(i_treatment){
     # Pre-index to reduce runtime
     transition_matrices_tr <- transition_matrices[, i_treatment, , , ]
-    cohort_vectors_tr <- cohort_vectors[, i_treatment, , ]
+    cohort_vectors_tr <- cohort_vectors[, i_implant, , ]
     cycle_costs_tr <- cycle_costs[, i_treatment, ]
     cycle_qalys_tr <- cycle_qalys[, i_treatment, ]
     treatment_costs_tr <- implant_costs[i_treatment, ]
@@ -82,8 +84,8 @@ generate_net_benefit_lapply <- function(input_parameters, lambda = 20000) {
     # In this case state qalys are the same for all treatments/implants 
     # but in general allow this for optimization
     state_qalys_tr <- state_qalys[,i_treatment, ]
+
     
- 
     # Loop over the cycles
     # Cycle 1 is already defined so only need to update cycles 2:n_cycles
     
