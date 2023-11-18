@@ -32,7 +32,7 @@ generate_net_benefit_lapply <- function(input_parameters, lambda = 20000) {
   rownames(implant_costs) <- treatment_names
   # Build an array to store the cohort vector at each cycle
   # Each cycle, implant and PSA sample has a single cohort vector of length n_states
-  cohort_vectors <- array(dim = c(n_cycles, n_treatments, n_samples,  n_states), 
+  cohort_vectors <- array(0, dim = c(n_cycles, n_treatments, n_samples,  n_states), 
                           dimnames = list(NULL, treatment_names, NULL, state_names))
   
   mortality <- read_excel(paste0(data_directory, "/cohort_model_inputs.xlsx"), sheet = "mortality")
@@ -98,12 +98,11 @@ generate_net_benefit_lapply <- function(input_parameters, lambda = 20000) {
       
       # Loop over the cycles
       # Cycle 1 is already defined so only need to update cycles 2:n_cycles
-      for(i_cycle in 2:n_cycles)
-      {
+      for(i_cycle in 2:n_cycles){
         # Markov update
         # Multiply previous cycle's cohort vector by transition matrix
         # i_e_ pi_j = pi_(j-1)*P
-        cohort_vectors_tr_sample[i_cycle, ] <- 
+         cohort_vectors_tr_sample[i_cycle, ] <- 
           cohort_vectors_tr_sample[i_cycle - 1, ] %*% transition_matrices_tr_sample[i_cycle - 1, , ]
       } 
       # Use cohort vectors to calculate cycle costs and qalys
@@ -120,6 +119,7 @@ generate_net_benefit_lapply <- function(input_parameters, lambda = 20000) {
     return(list(total_qalys = total_qalys_tr, total_costs = total_costs_tr))
     
   }) -> output_list # End lapply
+  
   
   names(output_list) <- treatment_names 
   

@@ -22,7 +22,7 @@ source('code/generate_net_benefit_lapply.R')
 data_directory = "C:/Users/yx18392/Desktop/semi Markov data"
 
 # Define global simulation parameters
-n_samples <- 100
+n_samples <- 1000
 
 # Define global model structure parameters
 n_states <- 8
@@ -69,7 +69,7 @@ input_parameters <- generate_input_parameters(n_samples,
                                               gender = gender)
 
 # Run the Markov model to get the model outputs
-model_outputs <- generate_net_benefit_df(input_parameters, lambda = 20000)
+model_outputs <- generate_net_benefit_lapply(input_parameters, lambda = 20000)
 
 ####################################################################################################
 ## Quick manual check of resutls ###################################################################
