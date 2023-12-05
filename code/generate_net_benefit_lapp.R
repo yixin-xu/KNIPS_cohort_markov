@@ -39,7 +39,7 @@ generate_net_benefit_df <- function(input_parameters, lambda = 20000) {
     transition_matrices_temp_df[[i_state]] <- transition_matrices_temp[, , , , i_state]
     # Convert the multidimensional array to a data frame
     transition_matrices_temp_df[[i_state]] <- 
-      reshape2::melt(transition_matrices_temp_df[[i_state]], varnames = c("cycle", "implant", "sample", "from"))
+      melt(transition_matrices_temp_df[[i_state]], varnames = c("cycle", "implant", "sample", "from"))
     # Name the state to which you're transiting
     colnames(transition_matrices_temp_df[[i_state]])[5] <- state_names[i_state]
   }
@@ -120,8 +120,6 @@ generate_net_benefit_df <- function(input_parameters, lambda = 20000) {
       }
     }
   }
-  
-  cohort_vectors$all = rowSums(cohort_vectors[,4:11])
   
   
   lapply(c(1:n_treatments), function(i_treatment){

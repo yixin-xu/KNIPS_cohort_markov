@@ -38,7 +38,7 @@ n_treatments <- length(treatment_names)
 event_names <- c("early primary", "middle primary", "late primary", "early revision", "middle revision", "late revision", "reresion")
 
 
-age_range <- "0-55"
+age_range <- "85-Inf"
 
 initial_age <- substring(age_range, 1, 2)
 final_age <- substring(age_range, 4, 6)
@@ -52,7 +52,7 @@ if(is.infinite(as.numeric(final_age))) {starting_age <- 90 }else{
   if (initial_age == "0-") {starting_age <- 53}else{starting_age <- ceiling((as.numeric(final_age)+as.numeric(initial_age))/2)}
 }
 # Specify the gender
-gender <- "female"
+gender <- "male"
 
 # Define global scenario parameters
 if (initial_age == "0-") {n_cycles <- 50}else{
@@ -90,7 +90,7 @@ knips_bcea <- bcea(e = t(model_outputs$total_qalys), c = t(model_outputs$total_c
 #summary(knips_bcea, wtp = 20000)
 
 # Plot a CEAC
-setwd('C:/Users/yx18392/Desktop/results/cohort_discrete_norm')
+setwd('C:/Users/yx18392/Desktop')
 
 png(file=paste0(gender,"-", age_range,"_multice.png"))
 knips_multi_ce <- multi.ce(knips_bcea)
@@ -129,6 +129,10 @@ for (treatment in treatment_names){
 
 icer_table = data.frame(results_matrix)
 write.csv(icer_table, file = paste0(gender,"-", age_range,"icer_results.csv"))
+
+
+
+
 
 
 ##################################################################################

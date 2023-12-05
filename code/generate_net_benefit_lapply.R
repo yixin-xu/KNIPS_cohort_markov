@@ -74,7 +74,7 @@ generate_net_benefit_lapply <- function(input_parameters, lambda = 20000) {
   lapply(c(1:n_treatments), function(i_treatment){
     # Pre-index to reduce runtime
     transition_matrices_tr <- transition_matrices[, i_treatment, , , ]
-    cohort_vectors_tr <- cohort_vectors[, i_implant, , ]
+    cohort_vectors_tr <- cohort_vectors[, i_treatment, , ]
     cycle_costs_tr <- cycle_costs[, i_treatment, ]
     cycle_qalys_tr <- cycle_qalys[, i_treatment, ]
     treatment_costs_tr <- implant_costs[i_treatment, ]

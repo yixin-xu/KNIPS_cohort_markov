@@ -31,7 +31,7 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
   log_rate_1st_revision[,2:10]= log(log_rate_1st_revision[,2:10])
   
   # Impute 1st and 12th implants to be the average over all implants
-
+  
   if ("log_rate_1st_revision_<3Implant MoP Cem CR_Fix Mod" %in% colnames(input_parameters)){
     input_parameters[ , "log_rate_1st_revision_<3Implant MoP Cem CR_Fix Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean1[treatment == "Cem CR_Fix Mod"],
                                                                                                                    sd = ((UL1[treatment == "Cem CR_Fix Mod"]-LL1[treatment == "Cem CR_Fix Mod"])/2*1.96))) }     
@@ -108,42 +108,7 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
                                                                                                                     sd = ((UL2[treatment == "OX Cem PS_Fix Mod"]-LL2[treatment == "OX Cem PS_Fix Mod"])/2*1.96)))}   
   
   
-  if ("log_rate_1st_revision_>10Implant MoP Cem CR_Fix Mono" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Cem CR_Fix Mono"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Cem CR_Fix Mono"],
-                                                                                                                     sd = ((UL3[treatment == "Cem CR_Fix Mono"]-LL3[treatment == "Cem CR_Fix Mono"])/2*1.96)))}
-  if ("log_rate_1st_revision_>10Implant MoP Cem CR_Fix Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Cem CR_Fix Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Cem CR_Fix Mod"],
-                                                                                                                    sd = ((UL3[treatment == "Cem CR_Fix Mod"]-LL3[treatment == "Cem CR_Fix Mod"])/2*1.96)))}                                                                                       
-  if ("log_rate_1st_revision_>10Implant MoP Cem CR_Mob Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Cem CR_Mob Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Cem CR_Mob Mod"],
-                                                                                                                    sd = ((UL3[treatment == "Cem CR_Mob Mod"]-LL3[treatment == "Cem CR_Mob Mod"])/2*1.96)))}                                                                                       
-  if ("log_rate_1st_revision_>10Implant MoP Cem PS_Fix Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Cem PS_Fix Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Cem PS_Fix Mod"],
-                                                                                                                    sd = ((UL3[treatment == "Cem PS_Fix Mod"]-LL3[treatment == "Cem PS_Fix Mod"])/2*1.96)))}                                                                                       
-  if ("log_rate_1st_revision_>10Implant MoP Cem PS_Mob Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Cem PS_Mob Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Cem PS_Mob Mod"],
-                                                                                                                    sd = ((UL3[treatment == "Cem PS_Mob Mod"]-LL3[treatment == "Cem PS_Mob Mod"])/2*1.96))) }                                                                                      
-  if ("log_rate_1st_revision_>10Implant MoP Cem Con_Con Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Cem Con_Con Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Cem Con_Con Mod"],
-                                                                                                                     sd = ((UL3[treatment == "Cem Con_Con Mod"]-LL3[treatment == "Cem Con_Con Mod"])/2*1.96)))}                                                                                       
-  if ("log_rate_1st_revision_>10Implant MoP Unc CR_Fix Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Unc CR_Fix Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Unc CR_Fix Mod"],
-                                                                                                                    sd = ((UL3[treatment == "Unc CR_Fix Mod"]-LL3[treatment == "Unc CR_Fix Mod"])/2*1.96)))}                                                                                       
-  if ("log_rate_1st_revision_>10Implant MoP Unc CR_Mob Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Unc CR_Mob Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Unc CR_Mob Mod"],
-                                                                                                                    sd = ((UL3[treatment == "Unc CR_Mob Mod"]-LL3[treatment == "Unc CR_Mob Mod"])/2*1.96))) }                                                                                      
-  if ("log_rate_1st_revision_>10Implant MoP Unc PS_Fix Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Unc PS_Fix Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Unc PS_Fix Mod"],
-                                                                                                                    sd = ((UL3[treatment == "Unc PS_Fix Mod"]-LL3[treatment == "Unc PS_Fix Mod"])/2*1.96))) }                                                                                      
-  if ("log_rate_1st_revision_>10Implant MoP Hyb CR_Fix Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant MoP Hyb CR_Fix Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "Hyb CR_Fix Mod"],
-                                                                                                                    sd = ((UL3[treatment == "Hyb CR_Fix Mod"]-LL3[treatment == "Hyb CR_Fix Mod"])/2*1.96)))}                                                                                       
-  if ("log_rate_1st_revision_>10Implant OX Cem CR_Fix Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant OX Cem CR_Fix Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "OX Cem CR_Fix Mod"],
-                                                                                                                   sd = ((UL3[treatment == "OX Cem CR_Fix Mod"]-LL3[treatment == "OX Cem CR_Fix Mod"])/2*1.96))) }                                                                                      
-  if ("log_rate_1st_revision_>10Implant OX Cem PS_Fix Mod" %in% colnames(input_parameters)){
-    input_parameters[ , "log_rate_1st_revision_>10Implant OX Cem PS_Fix Mod"] <- with(log_rate_1st_revision, rnorm(n_samples, mean = mean3[treatment == "OX Cem PS_Fix Mod"],
-                                                                                                                   sd = ((UL3[treatment == "OX Cem PS_Fix Mod"]-LL3[treatment == "OX Cem PS_Fix Mod"])/2*1.96))) }          
+    
   
   lograte_revision[,2:4]= log(lograte_revision[,2:4])
   
@@ -151,15 +116,7 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
                                                                                      sd = ((UL[parameter == "early_revision"]-LL[parameter == "early_revision"])/2*1.96)))
   input_parameters[ , "log_rate_2nd_revision_middle"] <- with(lograte_revision, rnorm(n_samples, mean =  mean[parameter == "middle_revision"],
                                                                                       sd = ((UL[parameter == "middle_revision"]-LL[parameter == "middle_revision"])/2*1.96)))
-  
-  if(is.infinite(as.numeric(final_age))) {
-    input_parameters[ , "log_rate_2nd_revision_late"] <- NaN}else{
-      input_parameters[ , "log_rate_2nd_revision_late"] <- with(lograte_revision, rnorm(n_samples, mean =  mean[parameter == "late_revision"],
-                                                                                        sd = ((UL[parameter == "late_revision"]-LL[parameter == "late_revision"])/2*1.96)))
-      
-    }
-  
-  utilities[, "age"]
+
   # third revision
   sd_third = (as.numeric(lograte_revision[5,4]) - as.numeric(lograte_revision[5,3]))/2*1.96
   se_third = sd_third/sqrt(as.numeric(lograte_revision[5,5]))
@@ -235,9 +192,9 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
                                utilities[, "gender"] == gender)
   
   
-  input_parameters[ ,"qalys_State Post TKR <3 years"] <- input_parameters[ ,"qalys_State Post TKR >=3 years < 10 years"] <- input_parameters[ ,"qalys_State Post TKR >=10 years"] <-
+  input_parameters[ ,"qalys_State Post TKR <3 years"] <- input_parameters[ ,"qalys_State Post TKR >=3 years < 10 years"] <-
     rep(rnorm(n_samples, mean = as.numeric(utilities[utility_row_index,6]), sd = (as.numeric(utilities[utility_row_index,8])-as.numeric(utilities[utility_row_index,7]))/2*1.96), n= n_treatments)
-  input_parameters[ ,"qalys_State Early revision"] <- input_parameters[ ,"qalys_State middle revision"] <-  input_parameters[ ,"qalys_State late revision"] <- input_parameters[ ,"qalys_State second revision"] <-
+  input_parameters[ ,"qalys_State Early revision"] <- input_parameters[ ,"qalys_State middle revision"] <-  input_parameters[ ,"qalys_State second revision"] <-
     rep(rnorm(n_samples, mean = as.numeric(utilities[utility_row_index,12]), sd = (as.numeric(utilities[utility_row_index,14])-as.numeric(utilities[utility_row_index,13]))/2*1.96), n= n_treatments)
   input_parameters[ ,"qalys_State Death"]<- rep(rep(0, each = n_samples), n= n_treatments)
   
@@ -247,7 +204,7 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
     if(sensitivity == "un_utilities") {
       input_parameters[ ,"qalys_State Post TKR <3 years"] <- input_parameters[ ,"qalys_State Post TKR >=3 years < 10 years"] <- input_parameters[ ,"qalys_State Post TKR >=10 years"] <- 
         rep(rnorm(n_samples, mean = as.numeric(un_utilities[utility_row_index,6]), sd = (as.numeric(un_utilities[utility_row_index,8])-as.numeric(un_utilities[utility_row_index,7]))/2*1.96), n= n_treatments)
-      input_parameters[ ,"qalys_State Early revision"] <- input_parameters[ ,"qalys_State middle revision"] <-  input_parameters[ ,"qalys_State late revision"] <- input_parameters[ ,"qalys_State second revision"] <-
+      input_parameters[ ,"qalys_State Early revision"] <- input_parameters[ ,"qalys_State middle revision"] <-  input_parameters[ ,"qalys_State second revision"] <-
         rep(rnorm(n_samples, mean = as.numeric(un_utilities[utility_row_index,12]), sd = (as.numeric(un_utilities[utility_row_index,14])-as.numeric(un_utilities[utility_row_index,13]))/2*1.96), n= n_treatments)
       input_parameters[ ,"qalys_State Death"]<- rep(rep(0, each = n_samples), n= n_treatments)
     }
@@ -262,7 +219,7 @@ generate_input_parameters <- function(n_samples, treatment_names = treatment_nam
         input_parameters[ ,"qalys_State middle revision"] <-  input_parameters[ ,"qalys_State late revision"] <- rep(rep(0, each = n_samples), n= n_treatments)
     }
   }
-  
+
   
   
   return(input_parameters)

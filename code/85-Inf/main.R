@@ -1,9 +1,3 @@
-# Economic Evaluation Modelling Using R
-# Advanced Markov models lecture
-# Script conduct cost-effectiveness analysis of atrial fibrillation using example Markov model
-
-# Load BCEA library to help analyse and visualise results
-
 library(BCEA)
 library(readxl)
 library(ggplot2)
@@ -15,21 +9,20 @@ set.seed(14142234)
 
 source('code/generate_input_parameters.R')
 source('code/generate_transition_matrices.R')
-source('code/convert_transition_matrices_to_df.R')
 source('code/generate_state_qalys.R')
 source('code/generate_state_costs.R')
-source('code/generate_net_benefit_cpp_full.R')
+source('code/generate_net_benefit_lapply.R')
 
 
 data_directory = "C:/Users/yx18392/Desktop/semi Markov data"
 
 # Define global simulation parameters
-n_samples <- 5
+n_samples <- 1000
 
 # Define global model structure parameters
-n_states <- 8
-state_names <- paste("State", c("Post TKR <3 years", "Post TKR >=3 years < 10 years", "Post TKR >=10 years", 
-                                "Early revision",  "middle revision", "late revision", "second revision", "Death"))
+n_states <- 6
+state_names <- paste("State", c("Post TKR <3 years", "Post TKR >=3 years < 10 years", 
+                                "Early revision",  "middle revision", "second revision", "Death"))
 
 treatment_names <- paste("Implant", c("MoP Cem CR_Fix Mod","MoP Cem CR_Fix Mono",  "MoP Cem CR_Mob Mod",
                                       "MoP Cem PS_Fix Mod", "MoP Cem PS_Mob Mod",  "MoP Cem Con_Con Mod",
@@ -40,7 +33,7 @@ n_treatments <- length(treatment_names)
 event_names <- c("early primary", "middle primary", "late primary", "early revision", "middle revision", "late revision", "reresion")
 
 
-age_range <- "0-55"
+age_range <- "85-Inf"
 
 initial_age <- substring(age_range, 1, 2)
 final_age <- substring(age_range, 4, 6)
@@ -51,7 +44,7 @@ if (initial_age == "0-") {ini_age <- 50}else{
 
 
 if(is.infinite(as.numeric(final_age))) {starting_age <- 90 }else{
-if (initial_age == "0-") {starting_age <- 53}else{starting_age <- ceiling((as.numeric(final_age)+as.numeric(initial_age))/2)}
+  if (initial_age == "0-") {starting_age <- 53}else{starting_age <- ceiling((as.numeric(final_age)+as.numeric(initial_age))/2)}
 }
 # Specify the gender
 gender <- "female"
@@ -71,15 +64,7 @@ input_parameters <- generate_input_parameters(n_samples,
                                               gender = gender)
 
 # Run the Markov model to get the model outputs
-model_outputs <- generate_net_benefit(input_parameters,
-                                      treatment_names = treatment_names, 
-                                      state_names = state_names,
-                                      initial_age = initial_age,
-                                      final_age = final_age,
-                                      starting_age = starting_age,
-                                      gender = gender,
-                                      n_cycles = n_cycles,
-                                      lambda = 20000)
+model_outputs <- generate_net_benefit_lapply(input_parameters, lambda = 20000)
 
 ####################################################################################################
 ## Quick manual check of resutls ###################################################################
@@ -100,13 +85,13 @@ knips_bcea <- bcea(e = t(model_outputs$total_qalys), c = t(model_outputs$total_c
 #summary(knips_bcea, wtp = 20000)
 
 # Plot a CEAC
-setwd('C:/Users/yx18392/Desktop/results/cohort_discrete_norm')
+setwd('C:/Users/yx18392/Desktop')
 
 png(file=paste0(gender,"-", age_range,"_multice.png"))
 knips_multi_ce <- multi.ce(knips_bcea)
 ceac.plot(knips_multi_ce, graph = "ggplot",
-         line = list(colors = rainbow(12)),
-         pos = c(1,1))
+          line = list(colors = rainbow(12)),
+          pos = c(1,1))
 
 
 dev.off()
@@ -141,6 +126,10 @@ icer_table = data.frame(results_matrix)
 write.csv(icer_table, file = paste0(gender,"-", age_range,"icer_results.csv"))
 
 
+
+
+
+
 ##################################################################################
 ## VoI analysis - takes a few minutes ############################################
 ##################################################################################
@@ -165,33 +154,33 @@ evpi_table["Total", c("Per person", "Population")] <-  knips_bcea$evi[201] * c(1
 # Log rate of first revision (same EVPPI as if calculating probability)
 # Use GP instead of GAM as 4 parameters
 evppi_gp_1st_revision_1 <- evppi(param_idx = c("log_rate_1st_revision_<3Implant MoP Cem CR_Fix Mono",
-                                   "log_rate_1st_revision_<3Implant MoP Cem CR_Fix Mod",
-                                   "log_rate_1st_revision_<3Implant MoP Cem CR_Mob Mod",
-                                   "log_rate_1st_revision_<3Implant MoP Cem PS_Fix Mod",
-                                   "log_rate_1st_revision_<3Implant MoP Cem PS_Mob Mod",
-                                   "log_rate_1st_revision_<3Implant MoP Cem Con_Con Mod",
-                                   "log_rate_1st_revision_<3Implant MoP Unc CR_Fix Mod",
-                                   "log_rate_1st_revision_<3Implant MoP Unc CR_Mob Mod",
-                                   "log_rate_1st_revision_<3Implant MoP Unc PS_Fix Mod",
-                                   "log_rate_1st_revision_<3Implant MoP Hyb CR_Fix Mod",
-                                   "log_rate_1st_revision_<3Implant OX Cem CR_Fix Mod",
-                                   "log_rate_1st_revision_<3Implant OX Cem PS_Fix Mod"),
+                                               "log_rate_1st_revision_<3Implant MoP Cem CR_Fix Mod",
+                                               "log_rate_1st_revision_<3Implant MoP Cem CR_Mob Mod",
+                                               "log_rate_1st_revision_<3Implant MoP Cem PS_Fix Mod",
+                                               "log_rate_1st_revision_<3Implant MoP Cem PS_Mob Mod",
+                                               "log_rate_1st_revision_<3Implant MoP Cem Con_Con Mod",
+                                               "log_rate_1st_revision_<3Implant MoP Unc CR_Fix Mod",
+                                               "log_rate_1st_revision_<3Implant MoP Unc CR_Mob Mod",
+                                               "log_rate_1st_revision_<3Implant MoP Unc PS_Fix Mod",
+                                               "log_rate_1st_revision_<3Implant MoP Hyb CR_Fix Mod",
+                                               "log_rate_1st_revision_<3Implant OX Cem CR_Fix Mod",
+                                               "log_rate_1st_revision_<3Implant OX Cem PS_Fix Mod"),
                                  input = input_parameters, he = knips_bcea, method = 'gp')
 evpi_table["1st revision probabilities_<3", c("Per person", "Population")] <- evppi_gp_1st_revision_1$evppi[201] * c(1, discounted_population_size)
 
 evppi_gp_1st_revision_2 <- evppi(param_idx = c("log_rate_1st_revision_3-10Implant MoP Cem CR_Fix Mono",
-                                                "log_rate_1st_revision_3-10Implant MoP Cem CR_Fix Mod",
-                                                "log_rate_1st_revision_3-10Implant MoP Cem CR_Mob Mod",
-                                                "log_rate_1st_revision_3-10Implant MoP Cem PS_Fix Mod",
-                                                "log_rate_1st_revision_3-10Implant MoP Cem PS_Mob Mod",
-                                                "log_rate_1st_revision_3-10Implant MoP Cem Con_Con Mod",
-                                                "log_rate_1st_revision_3-10Implant MoP Unc CR_Fix Mod",
-                                                "log_rate_1st_revision_3-10Implant MoP Unc CR_Mob Mod",
-                                                "log_rate_1st_revision_3-10Implant MoP Unc PS_Fix Mod",
-                                                "log_rate_1st_revision_3-10Implant MoP Hyb CR_Fix Mod",
-                                                "log_rate_1st_revision_3-10Implant OX Cem CR_Fix Mod",
-                                                "log_rate_1st_revision_3-10Implant OX Cem PS_Fix Mod"),
-                                  input = input_parameters, he = knips_bcea, method = 'gp')
+                                               "log_rate_1st_revision_3-10Implant MoP Cem CR_Fix Mod",
+                                               "log_rate_1st_revision_3-10Implant MoP Cem CR_Mob Mod",
+                                               "log_rate_1st_revision_3-10Implant MoP Cem PS_Fix Mod",
+                                               "log_rate_1st_revision_3-10Implant MoP Cem PS_Mob Mod",
+                                               "log_rate_1st_revision_3-10Implant MoP Cem Con_Con Mod",
+                                               "log_rate_1st_revision_3-10Implant MoP Unc CR_Fix Mod",
+                                               "log_rate_1st_revision_3-10Implant MoP Unc CR_Mob Mod",
+                                               "log_rate_1st_revision_3-10Implant MoP Unc PS_Fix Mod",
+                                               "log_rate_1st_revision_3-10Implant MoP Hyb CR_Fix Mod",
+                                               "log_rate_1st_revision_3-10Implant OX Cem CR_Fix Mod",
+                                               "log_rate_1st_revision_3-10Implant OX Cem PS_Fix Mod"),
+                                 input = input_parameters, he = knips_bcea, method = 'gp')
 evpi_table["1st revision probabilities_3-10", c("Per person", "Population")] <- evppi_gp_1st_revision_2$evppi[201] * c(1, discounted_population_size)
 
 evppi_gp_1st_revision_3 <- evppi(param_idx = c("log_rate_1st_revision_>10Implant MoP Cem CR_Fix Mono",
@@ -219,18 +208,18 @@ evpi_table["2nd and higher revision probabilities", c("Per person", "Population"
 
 # Utilities
 evppi_gam_primary_utilities <- evppi(param_idx =  
-                               c( "qalys_State Post TKR <3 years", 
-                                  "qalys_State Post TKR >=3 years < 10 years", 
-                                  "qalys_State Post TKR >=10 years"), 
-                             input = input_parameters, he = knips_bcea, method = 'gam')
+                                       c( "qalys_State Post TKR <3 years", 
+                                          "qalys_State Post TKR >=3 years < 10 years", 
+                                          "qalys_State Post TKR >=10 years"), 
+                                     input = input_parameters, he = knips_bcea, method = 'gam')
 evpi_table["primary utilities", c("Per person", "Population")] <- evppi_gam_primary_utilities$evppi[201] * c(1, discounted_population_size)
 
 evppi_gam_revision_utilities <- evppi(param_idx =  
-                               c( "qalys_State Early revision", 
-                                  "qalys_State middle revision", 
-                                  "qalys_State late revision", 
-                                  "qalys_State second revision"), 
-                             input = input_parameters, he = knips_bcea, method = 'gam')
+                                        c( "qalys_State Early revision", 
+                                           "qalys_State middle revision", 
+                                           "qalys_State late revision", 
+                                           "qalys_State second revision"), 
+                                      input = input_parameters, he = knips_bcea, method = 'gam')
 evpi_table["revision utilities", c("Per person", "Population")] <- evppi_gam_revision_utilities$evppi[201] * c(1, discounted_population_size)
 
 
